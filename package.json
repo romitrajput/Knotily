@@ -1,0 +1,28 @@
+{
+  "name": "knotily",
+  "private": true,
+  "version": "2.0.0",
+  "description": "Knot'ily shop: 3D garment storefront, accounts, stock, Razorpay checkout, encrypted customer data and an owner dashboard. Vite + vanilla JS front end, zero-dependency Node API on Vercel, Supabase (Postgres, Auth, Storage).",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "api": "node --env-file=.env scripts/local-api.mjs",
+    "build": "vite build",
+    "preview": "vite preview --port 4173",
+    "keys": "node scripts/gen-keys.mjs",
+    "seed:make": "node scripts/make-seed.mjs",
+    "test": "node --test tests/unit.test.mjs",
+    "test:sql": "bash tests/sql/reset-db.sh && psql -h ${PGHOST:-127.0.0.1} -p ${PGPORT:-54329} -U ${PGUSER:-postgres} -d ${PGDATABASE:-knotily_test} -v ON_ERROR_STOP=1 -q -f tests/sql/logic.test.sql",
+    "test:api": "node --test --test-concurrency=1 tests/api.test.mjs",
+    "test:e2e": "node tests/e2e/shopper.e2e.mjs && node tests/e2e/owner.e2e.mjs",
+    "test:all": "npm test && npm run test:sql && npm run test:api && npm run test:e2e",
+    "stack": "node tests/e2e/stack.mjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.48.0",
+    "vite": "^5.4.10"
+  },
+  "engines": {
+    "node": ">=20.6"
+  }
+}

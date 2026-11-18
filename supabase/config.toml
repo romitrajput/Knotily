@@ -1,0 +1,40 @@
+# Supabase CLI settings. Used by `supabase link` / `supabase db push` (GitHub Actions) and,
+# if you want, `supabase start` for a full local stack. Settings for the hosted projects
+# (redirect URLs, email templates, SMTP) are made in the Supabase dashboard — see docs/SETUP.md.
+project_id = "knotily"
+
+[api]
+enabled = true
+schemas = ["public"]
+max_rows = 1000
+
+[db]
+major_version = 15
+
+[auth]
+enabled = true
+site_url = "http://localhost:5173"
+additional_redirect_urls = ["http://localhost:5173/account/verified", "http://localhost:5173/account/reset"]
+enable_signup = true
+minimum_password_length = 8
+
+[auth.email]
+enable_signup = true
+enable_confirmations = true
+double_confirm_changes = true
+
+[auth.email.template.confirmation]
+subject = "Confirm your Knot'ily account"
+content_path = "./supabase/templates/confirm-signup.html"
+
+[auth.email.template.recovery]
+subject = "Reset your Knot'ily password"
+content_path = "./supabase/templates/reset-password.html"
+
+[auth.email.template.email_change]
+subject = "Confirm your new email for Knot'ily"
+content_path = "./supabase/templates/change-email.html"
+
+[storage]
+enabled = true
+file_size_limit = "100MiB"

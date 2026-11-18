@@ -1,0 +1,32 @@
+/* Device-aware tweaks. <html> carries data-device (phone | tablet | desktop),
+   data-os (ios | ipados | android | windows | macos | …) and .is-touch, set by src/lib/device.js.
+   Layout is still driven by media queries; these rules adjust behaviour per platform. */
+
+/* iOS / iPadOS: 16px inputs stop Safari zooming into forms; respect the notch and home bar. */
+[data-os='ios'] .field input, [data-os='ios'] .field select,
+[data-os='ipados'] .field input, [data-os='ipados'] .field select { font-size: 16px; }
+[data-os='ios'] body, [data-os='ipados'] body { -webkit-tap-highlight-color: transparent; }
+[data-os='ios'] .drawer-foot { padding-bottom: max(1rem, env(safe-area-inset-bottom)); }
+[data-os='ios'] .hdr { padding-left: max(var(--gutter), env(safe-area-inset-left)); padding-right: max(var(--gutter), env(safe-area-inset-right)); }
+
+/* Android: Material-style tap feedback and no grey tap flash. */
+[data-os='android'] body { -webkit-tap-highlight-color: transparent; }
+[data-os='android'] .btn:active, [data-os='android'] .size span:active { filter: brightness(1.15); }
+[data-os='android'] .field input, [data-os='android'] .field select { font-size: 16px; }
+
+/* Touch screens: no hover-only effects, bigger targets. */
+.is-touch .btn:hover { box-shadow: none; }
+.is-touch .size span { height: 48px; }
+.is-touch .link-btn { padding: 0.5rem 0; }
+
+/* Phones: the track player sits above the toast area. */
+[data-device='phone'] .track-pill { bottom: max(4.5rem, calc(env(safe-area-inset-bottom) + 3.75rem)); }
+[data-device='phone'] .modal-root { align-items: end; padding: 0; }
+[data-device='phone'] .modal { width: 100%; border-radius: 18px 18px 0 0; padding-bottom: max(1.5rem, env(safe-area-inset-bottom)); max-height: 92dvh; }
+
+/* Tablets: two-column forms stay side by side; slightly larger hit areas. */
+[data-device='tablet'] .field-row { grid-template-columns: 1fr 1fr; gap: 1rem; }
+[data-device='tablet'] .size span { min-width: 56px; height: 50px; }
+
+/* Installed to home screen: leave room for the status bar. */
+.is-standalone .hdr { padding-top: env(safe-area-inset-top); height: calc(var(--hdr) + env(safe-area-inset-top)); }

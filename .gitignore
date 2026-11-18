@@ -1,0 +1,13 @@
+node_modules
+dist
+.env
+.env.*
+!.env.example
+.outbox
+.DS_Store
+.vercel
+supabase/.temp
+supabase/.branches
+test-results
+playwright-report
+*.csv

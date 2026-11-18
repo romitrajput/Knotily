@@ -1,0 +1,40 @@
+name: Unzip uploaded site
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  unzip:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Unpack the zip into the repo
+        run: |
+          set -e
+          ZIP=$(ls *.zip 2>/dev/null | head -n 1)
+          if [ -z "$ZIP" ]; then echo "No .zip file found in the top of the repo"; exit 1; fi
+          echo "Unpacking $ZIP"
+          rm -rf /tmp/unpacked && mkdir /tmp/unpacked
+          unzip -q "$ZIP" -d /tmp/unpacked
+          SRC=/tmp/unpacked
+          if [ "$(ls -A $SRC | wc -l)" -eq 1 ] && [ -d "$SRC/$(ls -A $SRC)" ]; then SRC="$SRC/$(ls -A $SRC)"; fi
+          rm -rf "$SRC/.git" "$SRC/node_modules" "$SRC/.env"
+          if [ -d "$SRC/.github/workflows" ]; then
+            mkdir -p workflows-to-add
+            cp "$SRC"/.github/workflows/* workflows-to-add/
+            rm -rf "$SRC/.github"
+          fi
+          cp -a "$SRC"/. .
+          git rm -q "$ZIP"
+
+      - name: Commit the files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Unpack site files from zip"
+          git push
